@@ -1,4 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { getPost } from "./api/posts";
 import { CreatePost } from "./CreatePost";
 import Post from "./Post";
 import PostListInfinite from "./PostListInfinite";
@@ -8,6 +10,14 @@ import PostsList2 from "./PostsList2";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(<PostsList1 />);
+  const queryClient = useQueryClient();
+
+  function onHoverPostOneLink() {
+    queryClient.prefetchQuery({
+      queryKey: ["posts", 1],
+      queryFn: () => getPost(1),
+    });
+  }
 
   return (
     <div>
@@ -17,7 +27,10 @@ export default function App() {
       <button onClick={() => setCurrentPage(<PostsList2 />)}>
         Posts List 2
       </button>
-      <button onClick={() => setCurrentPage(<Post id={1} />)}>
+      <button
+        onMouseEnter={onHoverPostOneLink}
+        onClick={() => setCurrentPage(<Post id={1} />)}
+      >
         First Post
       </button>
       <button
